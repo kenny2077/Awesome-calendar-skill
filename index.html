@@ -38,13 +38,15 @@
      as the page itself rather than something embedded in it. */
   .stage iframe{display:block;width:100%;height:1010px;border:0;background:transparent}
 
-  /* ---- everything else sits under it, quietly ---------------------- */
-  .below{padding-top:52px;border-top:1px solid rgba(109,63,192,.1);margin-top:44px}
-  .ident{display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
-  h1{font-size:38px;font-weight:800;letter-spacing:-.032em;line-height:1.02}
-  .tagline{margin-top:12px;font-size:18px;color:#4a4059;max-width:46ch;line-height:1.45}
-  /* Stacked: three side-by-side buttons stretched the row wider than it earned. */
-  .actions{display:flex;flex-direction:column;gap:8px;min-width:228px}
+  /* ---- everything below the calendar ------------------------------- */
+  /* There is one card on this page and it is the calendar. Everything down
+     here is type and hairlines on the canvas, so nothing competes with it. */
+  .below{margin-top:46px;padding-top:50px;border-top:1px solid rgba(109,63,192,.13)}
+
+  .ident{display:grid;grid-template-columns:minmax(0,1fr) 232px;gap:48px;align-items:start}
+  h1{font-size:36px;font-weight:800;letter-spacing:-.033em;line-height:1.04}
+  .lead{margin-top:14px;font-size:18px;line-height:1.5;color:#4a4059;max-width:42ch}
+  .actions{display:flex;flex-direction:column;gap:8px}
   .btn{
     border:1px solid #d9ccec;background:var(--panel);color:var(--purple-deep);
     border-radius:12px;padding:12px 18px;font:inherit;font-weight:700;font-size:15px;
@@ -56,54 +58,51 @@
   .btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}
   .btn.primary:hover{background:#5b33a6}
 
-  .how{padding-top:36px}
-  ol.steps{margin:0;padding:0;list-style:none;counter-reset:step;display:grid;gap:2px;max-width:900px}
-  ol.steps li{
-    counter-increment:step;
-    display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:baseline;
-    padding:16px 20px;background:var(--panel);border:1px solid var(--line);
+  /* Four real steps, so they get four columns and the full page width. */
+  .steps{
+    list-style:none;margin:54px 0 0;padding:0;
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid rgba(109,63,192,.13);
   }
-  ol.steps li:first-child{border-radius:14px 14px 0 0}
-  ol.steps li:last-child{border-radius:0 0 14px 14px}
-  ol.steps li::before{
-    content:counter(step);
-    font-weight:800;font-size:16px;color:var(--purple);
-    background:var(--purple-1);border-radius:9px;
-    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-    transform:translateY(-3px);
+  .steps li{padding:28px 30px 0;border-left:1px solid rgba(109,63,192,.13)}
+  .steps li:first-child{border-left:0;padding-left:0}
+  .steps li:last-child{padding-right:0}
+  .steps .n{
+    display:block;font-size:21px;font-weight:800;line-height:1;
+    color:#b69ae4;margin-bottom:15px;font-variant-numeric:tabular-nums;
   }
-  ol.steps li p{font-size:16px;line-height:1.5}
-  ol.steps li code{
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;
-    background:var(--purple-1);padding:2px 6px;border-radius:5px;color:var(--purple-deep);
-  }
-  .note{
-    margin-top:24px;max-width:900px;padding:16px 20px;
-    background:var(--purple-1);border-radius:14px;
-    font-size:15px;line-height:1.55;color:#443a55;
+  .steps h2{font-size:16px;font-weight:800;letter-spacing:-.012em;margin-bottom:7px}
+  .steps p{font-size:15px;line-height:1.56;color:#5c5270}
+  /* No chip: its padding left a visible gap before the following period. */
+  .steps code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;
+    font-weight:600;color:var(--purple-deep);
   }
 
-  .marks{padding-top:36px;max-width:900px}
-  .marks h2{font-size:18px;font-weight:800;letter-spacing:-.015em;margin-bottom:12px}
-  .markgrid{display:flex;flex-wrap:wrap;gap:8px}
-  .mark{
-    display:flex;align-items:center;gap:9px;
-    background:var(--panel);border:1px solid var(--line);border-radius:999px;
-    padding:8px 15px 8px 12px;font-size:14px;
-  }
-  .mark span{font-family:Georgia,"Times New Roman",serif;font-size:18px;color:#4f2b91;line-height:1}
+  .closing{margin-top:48px;max-width:74ch;font-size:15px;line-height:1.68;color:#5c5270}
+  .closing b{color:var(--ink);font-weight:700}
 
-  footer{padding:52px 0 70px;color:var(--muted);font-size:14px;line-height:1.7}
+  footer{margin-top:52px;padding:26px 0 72px;border-top:1px solid rgba(109,63,192,.13);color:var(--muted);font-size:14px;line-height:1.7}
   footer a{color:var(--purple-deep);font-weight:600;text-decoration:none}
   footer a:hover{text-decoration:underline}
 
+  @media (max-width:1120px){
+    .steps{grid-template-columns:repeat(2,1fr)}
+    .steps li{padding:28px 30px 28px;border-left:1px solid rgba(109,63,192,.13)}
+    .steps li:nth-child(odd){border-left:0;padding-left:0}
+    .steps li:nth-child(n+3){border-top:1px solid rgba(109,63,192,.13)}
+  }
   @media (max-width:860px){
     h1{font-size:30px}
-    .tagline{font-size:17px}
+    .lead{font-size:17px}
     .stage iframe{height:640px}
-    .below{padding-top:42px;margin-top:42px}
-    .how{padding-top:28px}
-    .marks{padding-top:28px}
+    .below{margin-top:36px;padding-top:38px}
+    .ident{grid-template-columns:1fr;gap:26px}
+    .actions{max-width:320px}
+    .steps{grid-template-columns:1fr;margin-top:38px}
+    .steps li{padding:24px 0;border-left:0}
+    .steps li:nth-child(n+2){border-top:1px solid rgba(109,63,192,.13)}
+    .closing{margin-top:32px}
   }
   @media (prefers-reduced-motion:reduce){
     *{transition:none !important}
@@ -123,7 +122,7 @@
       <div class="ident">
         <div>
           <h1>Awesome Calendar Skill</h1>
-          <p class="tagline">The calendar above was generated in one shot from nothing but syllabus
+          <p class="lead">The calendar above was generated in one shot from nothing but syllabus
           files. Here is how to make yours.</p>
         </div>
         <div class="actions">
@@ -133,34 +132,32 @@
         </div>
       </div>
 
-      <div class="how">
-        <ol class="steps">
-          <li><p>Download or copy <code>SKILL.md</code> — one Markdown file, nothing to install.</p></li>
-          <li><p>Paste it into ChatGPT, Claude, Claude Code, Codex — whichever you already use.</p></li>
-          <li><p>Attach your course material: syllabus PDFs, schedule pages, Canvas grade tables,
-            screenshots, plain text. Mixed formats are fine. Messy is fine.</p></li>
-          <li><p>Ask for the semester matrix, then save the HTML it gives you and open it in any browser.</p></li>
-        </ol>
+      <ol class="steps">
+        <li>
+          <span class="n">1</span>
+          <h2>Get the file</h2>
+          <p>Download or copy <code>SKILL.md</code>. One Markdown file, nothing to install.</p>
+        </li>
+        <li>
+          <span class="n">2</span>
+          <h2>Paste it in</h2>
+          <p>ChatGPT, Claude, Claude Code, Codex — whichever you already use.</p>
+        </li>
+        <li>
+          <span class="n">3</span>
+          <h2>Add your syllabi</h2>
+          <p>PDFs, schedule pages, Canvas grade tables, screenshots, plain text. Mixed and messy is fine.</p>
+        </li>
+        <li>
+          <span class="n">4</span>
+          <h2>Open the result</h2>
+          <p>Ask for the semester matrix, save the HTML it returns, open it in any browser.</p>
+        </li>
+      </ol>
 
-        <p class="note">The skill carries a self-inspection loop: the model scores its own render and
-        fixes it before handing it over, which is why the first output is usually the one you keep.
-        Nothing is uploaded and nothing runs on a server — the result is one self-contained HTML file
-        that works offline.</p>
-      </div>
-
-      <div class="marks">
-        <h2>Reading the grid</h2>
-        <div class="markgrid">
-          <div class="mark"><span>♦</span>assignment</div>
-          <div class="mark"><span>♠</span>quiz</div>
-          <div class="mark"><span>♣</span>exam</div>
-          <div class="mark"><span>♥</span>project or presentation</div>
-          <div class="mark"><span>●</span>participation</div>
-          <div class="mark"><span>▲</span>report or milestone</div>
-        </div>
-        <p class="note">Cells hold marks and no text, so the grid stays readable across a whole
-        semester. The deeper the purple, the more that week is carrying.</p>
-      </div>
+      <p class="closing">The skill scores its own render and fixes it before handing it over, which is
+      why the <b>first output is usually the one you keep</b>. Nothing is uploaded and nothing runs on
+      a server — what comes back is a single HTML file that works offline.</p>
     </section>
   </main>
 
@@ -191,25 +188,37 @@
     }catch(err){ /* cross-origin or not ready; the CSS height stands */ }
   }
 
-  frame.addEventListener('load', () => {
-    try{
-      // Neutralize the demo's min-height:100vh in the embed only; the standalone
-      // file is untouched.
-      const doc = frame.contentDocument;
-      const patch = doc.createElement('style');
-      // Also trim the demo's own bottom padding so the frame ends at the grid
-      // rather than on a band of empty canvas.
-      patch.textContent = 'body{min-height:0 !important}.shell{padding-bottom:6px !important}';
-      doc.head.appendChild(patch);
-    }catch(err){}
+  // Track the document we prepared: a fresh iframe reports about:blank as
+  // "complete", so a plain boolean flag would latch onto the wrong document and
+  // skip the real one.
+  let preparedDoc = null;
+
+  function initFrame(){
+    let doc;
+    try{ doc = frame.contentDocument; }catch(err){ return; }
+    if(!doc || doc === preparedDoc) return;
+    if(!doc.querySelector('.shell')) return;   // still about:blank
+    preparedDoc = doc;
+
+    // Neutralize the demo's min-height:100vh in the embed only; the standalone
+    // file is untouched. Also trim its bottom padding so the frame ends at the
+    // grid rather than on a band of empty canvas.
+    const patch = doc.createElement('style');
+    patch.textContent = 'body{min-height:0 !important}.shell{padding-bottom:6px !important}';
+    doc.head.appendChild(patch);
+    // Switching between the semester and weekly views changes the height.
+    doc.addEventListener('click', () => setTimeout(fitFrame, 80));
+
     fitFrame();
     // Fonts settle after load and shift the grid slightly.
     setTimeout(fitFrame, 400);
-    try{
-      // Switching between the semester and weekly views changes the height.
-      frame.contentDocument.addEventListener('click', () => setTimeout(fitFrame, 80));
-    }catch(err){}
-  });
+  }
+
+  frame.addEventListener('load', initFrame);
+  // A cached frame can finish loading before this script runs, in which case the
+  // load event never reaches us and the frame would keep its CSS height.
+  initFrame();
+
   window.addEventListener('resize', () => setTimeout(fitFrame, 120));
 
   const btn = document.getElementById('copyBtn');
