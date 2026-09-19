@@ -239,25 +239,48 @@
   window.addEventListener('resize', () => setTimeout(fitFrame, 120));
 
   const btn = document.getElementById('copyBtn');
-  const SKILL_URL = 'skills/semester-matrix/SKILL.md';
-  let label = btn.textContent;
+  const label = btn.textContent;
 
-  function flash(text, revertAfter = 2200){
+  // Same-origin first; raw.githubusercontent is the fallback because a Jekyll
+  // build can turn SKILL.md into SKILL.html and 404 the Markdown path.
+  const SKILL_SOURCES = [
+    'skills/semester-matrix/SKILL.md',
+    'https://raw.githubusercontent.com/kenny2077/Uni-student-awesome-calendar-skill/main/skills/semester-matrix/SKILL.md'
+  ];
+  const SKILL_PAGE = 'https://github.com/kenny2077/Uni-student-awesome-calendar-skill/blob/main/skills/semester-matrix/SKILL.md';
+
+  function flash(text, revertAfter = 2400){
     btn.textContent = text;
     setTimeout(() => { btn.textContent = label; }, revertAfter);
   }
 
+  async function loadSkill(){
+    for(const url of SKILL_SOURCES){
+      try{
+        const res = await fetch(url, {cache:'no-store'});
+        if(!res.ok) continue;
+        const text = await res.text();
+        // A 404 page or a Jekyll-rendered page comes back as HTML, not the skill.
+        if(text.trimStart().startsWith('<')) continue;
+        if(text.includes('name: semester-matrix')) return text;
+      }catch(err){ /* try the next source */ }
+    }
+    return null;
+  }
+
   btn.addEventListener('click', async () => {
-    try {
-      const res = await fetch(SKILL_URL, {cache:'no-store'});
-      if(!res.ok) throw new Error(res.status);
-      const text = await res.text();
+    btn.disabled = true;
+    try{
+      const text = await loadSkill();
+      if(!text) throw new Error('skill unavailable');
       await navigator.clipboard.writeText(text);
       flash('Copied — now paste it into your LLM');
-    } catch (err) {
-      // Clipboard or fetch unavailable (file://, older browser, denied permission).
-      window.open('https://github.com/kenny2077/Uni-student-awesome-calendar-skill/blob/main/skills/semester-matrix/SKILL.md', '_blank');
+    }catch(err){
+      // No clipboard permission, or neither source answered.
+      window.open(SKILL_PAGE, '_blank', 'noopener');
       flash('Opened the skill on GitHub');
+    }finally{
+      btn.disabled = false;
     }
   });
 </script>
