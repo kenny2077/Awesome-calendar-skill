@@ -1,6 +1,6 @@
 ---
 name: semester-matrix-interactive-html-block
-description: Use when generating or revising an interactive HTML in GPT / Claude / Other agent for student schedule that summarizes a semester as a course-by-week matrix and a weekly course view. 
+description: Use when generating or revising an interactive HTML in GPT / Claude / Other agent for student schedule that summarizes a semester as a course-by-week matrix and a weekly course view.
 ---
 
 ### Data Source
@@ -10,7 +10,7 @@ Build an interactive calendar from normalized user uploaded data such as syllabu
 ### Visual layers
 
 - Produce two layers **semester view** and **weekly view**. The semester view opens first.
-- Simplicity design principle. Example: no text inside matrix cell, only symbols are allowed. Do not add unnecessary elements elsewhere such as uncessary Description sections.
+- Simplicity design principle. Example: no text inside matrix cell, only symbols are allowed. Do not add unnecessary elements elsewhere such as unnecessary Description sections.
 
 ### Visual Front End
 
@@ -24,7 +24,7 @@ Render one `course × week` matrix:
 - columns → real calendar-week matrix;
 - cells → use purple color intensity represents course load. Example: darker purple represents more load/due date this week
 - month labels → above the corresponding week columns;
-- quiz/exam marks → event-type symbol overlays on the cell. Example: spades, clubs, hearts, and diamonds symbol and more. spades means Quiz, clubs means Exam, spades clubs means both are present, more special types such as Seminar/Presentation/code review may use other symbols. avoid using very small symbol such as ` or * that hurt distinguishbility.
+- quiz/exam marks → event-type symbol overlays on the cell. Example: spades, clubs, hearts, and diamonds symbol and more. spades means Quiz, clubs means Exam, spades clubs means both are present, more special types such as Seminar/Presentation/code review may use other symbols. avoid using very small symbol such as ` or * that hurt distinguishability.
 
 ### Semester view
 
@@ -37,11 +37,8 @@ Render one calendar view
 
 - X → date/time;
 - Y → course lane;
-- point → due item with short description and due time, we don't need the item position to represent due time, just brief item text block without postition meaning.
-- "Previous Week <-  Next Week ->" Button on top right of weekly calender same level as " <- Semester view"
-
-### Weekly view
-
+- point → due item with short description and due time, we don't need the item position to represent due time, just brief item text block without position meaning.
+- "Previous Week <-  Next Week ->" Button on top right of weekly calendar same level as " <- Semester view"
 - Mouse hover on item → show more details near the item
 
 ## Inspect Agent
@@ -55,5 +52,5 @@ Inspect built project, Score **1–10** on:
 
 ## Output
 
-- Live HTML code preview prefered, not images.
-- If live view failed, you should tell users to download HTML and open HTML on Chrome or other browers for interactive view.
+- Live HTML code preview preferred, not images.
+- If live view failed, you should tell users to download HTML and open HTML on Chrome or other browsers for interactive view.
