@@ -8,11 +8,15 @@ Paste the skill into your favorite LLM, drop in your syllabus PDFs, schedule pag
 and grade tables — get back a single self-contained HTML file that shows your whole
 semester as a course × week workload matrix, with a weekly view one click away.
 
-[![status](https://img.shields.io/badge/status-active-18c964?style=flat-square)](#)
-[![skill](https://img.shields.io/badge/format-SKILL.md-6d3fc0?style=flat-square)](skills/semester-matrix/SKILL.md)
+[![live demo](https://img.shields.io/badge/live%20demo-try%20it%20now-6d3fc0?style=flat-square)](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/)
+[![skill](https://img.shields.io/badge/format-SKILL.md-54308d?style=flat-square)](skills/semester-matrix/SKILL.md)
 [![output](https://img.shields.io/badge/output-single%20HTML%20file-0ea5e9?style=flat-square)](examples/fall-2026-demo.html)
 [![deps](https://img.shields.io/badge/dependencies-none-green?style=flat-square)](#no-dependencies)
 [![license](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+
+### [→ Open the live demo](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/)
+
+Hover a cell. Click a cell. Nothing to install.
 
 <br>
 
@@ -37,10 +41,6 @@ Aurora Schedule replaces that with a single page you actually want to look at:
 | **Weekly view** | Click any cell. Courses as lanes, days as columns, every due item with its time. |
 | **Hover** | Details appear next to the cursor. No extra panels, no clutter. |
 
-<div align="center">
-<img src="docs/assets/readme/semester-hover.jpg" width="92%" alt="Hovering a cell in the semester matrix" />
-</div>
-
 ## Quickstart
 
 1. Open [`skills/semester-matrix/SKILL.md`](skills/semester-matrix/SKILL.md) and copy the whole file.
@@ -63,7 +63,6 @@ A single `.html` file. No build step, no server, no `node_modules`, no notebook 
 
 <div align="center">
 <img src="docs/assets/readme/weekly-view.jpg" width="92%" alt="Weekly view" />
-<img src="docs/assets/readme/weekly-hover.jpg" width="92%" alt="Hovering an item in the weekly view" />
 </div>
 
 ### Symbols
@@ -100,8 +99,11 @@ inspection criteria rather than a particular toolchain.
 
 ## Try it first
 
-[`examples/fall-2026-demo.html`](examples/fall-2026-demo.html) is a real one-shot
-output. Download it, open it in a browser, hover a cell, click a cell.
+The [live demo](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/) runs
+the real thing in your browser — hover a cell, click a cell, walk the weeks.
+
+It is rendering [`examples/fall-2026-demo.html`](examples/fall-2026-demo.html), an
+actual one-shot output, unedited. Download that file and it works the same offline.
 
 ## FAQ
 
