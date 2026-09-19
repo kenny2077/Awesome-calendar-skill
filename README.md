@@ -14,7 +14,7 @@ semester as a course × week workload matrix, with a weekly view one click away.
 [![deps](https://img.shields.io/badge/dependencies-none-green?style=flat-square)](#no-dependencies)
 [![license](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-### [→ Open the live demo](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/)
+### [→ Live demo](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/)
 
 Hover a cell. Click a cell. Nothing to install.
 
