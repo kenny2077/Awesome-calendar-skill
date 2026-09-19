@@ -8,13 +8,13 @@ Paste the skill into your favorite LLM, drop in your syllabus PDFs, schedule pag
 and grade tables — get back a single self-contained HTML file that shows your whole
 semester as a course × week workload matrix, with a weekly view one click away.
 
-[![live demo](https://img.shields.io/badge/live%20demo-try%20it%20now-6d3fc0?style=flat-square)](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/)
+[![live demo](https://img.shields.io/badge/live%20demo-try%20it%20now-6d3fc0?style=flat-square)](https://kenny2077.github.io/Awesome-calendar-skill/)
 [![skill](https://img.shields.io/badge/format-SKILL.md-54308d?style=flat-square)](skills/semester-matrix/SKILL.md)
 [![output](https://img.shields.io/badge/output-single%20HTML%20file-0ea5e9?style=flat-square)](examples/fall-2026-demo.html)
 [![deps](https://img.shields.io/badge/dependencies-none-green?style=flat-square)](#no-dependencies)
 [![license](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-### [→ Live demo](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/)
+### [→ Live demo](https://kenny2077.github.io/Awesome-calendar-skill/)
 
 Hover a cell. Click a cell. Nothing to install.
 
@@ -99,7 +99,7 @@ inspection criteria rather than a particular toolchain.
 
 ## Try it first
 
-The [live demo](https://kenny2077.github.io/Uni-student-awesome-calendar-skill/) runs
+The [live demo](https://kenny2077.github.io/Awesome-calendar-skill/) runs
 the real thing in your browser — hover a cell, click a cell, walk the weeks.
 
 It is rendering [`examples/fall-2026-demo.html`](examples/fall-2026-demo.html), an
