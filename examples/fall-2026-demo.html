@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fall 2026 Semester Matrix</title>
+<style>
+  :root{
+    --canvas:#f1ecff;
+    --panel:#ffffff;
+    --ink:#241b35;
+    --muted:#746a86;
+    --line:#e8e1f2;
+    --purple:#6d3fc0;
+    --purple-0:#faf8ff;
+    --purple-1:#eee7fb;
+    --purple-2:#ddcff7;
+    --purple-3:#c0a7ee;
+    --purple-4:#9871dc;
+    --shadow:0 22px 60px rgba(70,45,110,.12);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+  button{font:inherit}
+  .shell{max-width:1480px;margin:36px auto;padding:0 24px 48px}
+  .panel{background:var(--panel);border-radius:24px;box-shadow:var(--shadow);border:1px solid rgba(109,63,192,.08);overflow:hidden}
+  .topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:28px 30px 20px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);font-weight:750;margin-bottom:7px}
+  h1{font-size:28px;line-height:1.1;margin:0;letter-spacing:-.03em}
+  .sub{color:var(--muted);font-size:13px;margin-top:7px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:flex-end;max-width:720px}
+  .legend span{font-size:12px;color:#665d78;white-space:nowrap}
+  .legend b{color:var(--purple);font-size:15px;margin-right:4px}
+  .view{display:none}
+  .view.active{display:block}
+  .matrix-wrap{overflow-x:auto;padding:26px 30px 14px}
+  .matrix{display:grid;grid-template-columns:128px repeat(16,minmax(52px,1fr));min-width:1110px;align-items:stretch}
+  .corner{height:28px}
+  .month-label{height:28px;font-size:12px;font-weight:750;color:#5c526d;display:flex;align-items:center;padding-left:8px;border-left:1px solid var(--line)}
+  .week-label{height:42px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);border-left:1px solid var(--line);display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;line-height:1.2;color:#766d84;background:#fcfbfe}
+  .week-label.current{color:var(--purple);font-weight:800;background:#f5f0ff}
+  .course-label{height:58px;border-bottom:1px solid var(--line);display:flex;align-items:center;font-size:13px;font-weight:800;letter-spacing:.01em;padding-right:12px;position:sticky;left:0;background:#fff;z-index:2}
+  .cell{height:58px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:2px;cursor:pointer;position:relative;transition:transform .12s ease,box-shadow .12s ease,filter .12s ease;outline:none}
+  .cell:hover,.cell:focus-visible{z-index:3;transform:translateY(-2px);box-shadow:0 8px 20px rgba(91,54,150,.18);filter:saturate(1.08)}
+  .cell.current::after{content:"";position:absolute;inset:4px;border:1.5px solid rgba(109,63,192,.35);border-radius:7px;pointer-events:none}
+  .load0{background:var(--purple-0)} .load1{background:var(--purple-1)} .load2{background:var(--purple-2)} .load3{background:var(--purple-3)} .load4{background:var(--purple-4)}
+  .marks{font-family:Georgia,"Times New Roman",serif;color:#4f2b91;font-size:18px;letter-spacing:1px;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+  .load4 .marks{color:#fff;text-shadow:none}
+  .matrix-foot{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:8px 30px 28px;color:var(--muted);font-size:11px}
+  .load-scale{display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .swatch{width:18px;height:10px;border-radius:3px;border:1px solid rgba(50,30,90,.06)}
+  .tooltip{position:fixed;z-index:1000;max-width:340px;background:#2d2340;color:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 12px 30px rgba(34,22,52,.28);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .08s ease,transform .08s ease;font-size:12px;line-height:1.42}
+  .tooltip.show{opacity:1;transform:translateY(0)}
+  .tip-title{font-weight:800;margin-bottom:5px}.tip-line{color:#ece5f7}.tip-meta{color:#cdbfe4;margin-top:6px;font-size:11px}
+  .weekly-head{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:22px 30px 16px;border-bottom:1px solid var(--line)}
+  .weekly-left{display:flex;align-items:center;gap:12px;min-width:0}
+  .back,.navbtn{border:1px solid #d9ccec;background:#fff;color:#54308d;border-radius:10px;padding:9px 12px;font-weight:750;cursor:pointer}
+  .back:hover,.navbtn:hover{background:#f6f1ff}
+  .week-title{font-size:17px;font-weight:850;letter-spacing:-.01em}
+  .focus-chip{font-size:11px;background:#f0e8ff;color:#6337a8;border-radius:999px;padding:5px 8px;font-weight:750}
+  .week-nav{display:flex;gap:8px}
+  .weekly-wrap{overflow-x:auto;padding:24px 30px 30px}
+  .weekly-grid{display:grid;grid-template-columns:116px repeat(7,minmax(126px,1fr));min-width:1040px;border-top:1px solid var(--line);border-right:1px solid var(--line)}
+  .day-head{min-height:52px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fcfbfe}
+  .day-head .dow{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.day-head .date{font-size:13px;font-weight:850;margin-top:2px}
+  .lane-label{min-height:94px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:flex-start;padding:13px 10px;font-size:12px;font-weight:850;background:#fff;position:sticky;left:0;z-index:2}
+  .lane-label.focused{background:#f7f2ff;color:#6137a0}
+  .day-cell{min-height:94px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px;background:#fff;display:flex;flex-direction:column;gap:6px}
+  .day-cell.focused{background:#fcf9ff}
+  .item{border:1px solid #ded2ef;background:#f4eeff;border-radius:9px;padding:7px 8px;cursor:default;line-height:1.25;box-shadow:0 3px 8px rgba(80,50,120,.06)}
+  .item-time{font-size:10px;color:#7b6c91;font-weight:800;margin-bottom:3px}.item-title{font-size:11px;color:#3e2d58;font-weight:750}
+  .empty-note{padding:20px 30px 30px;color:var(--muted);font-size:12px}
+  @media(max-width:760px){.shell{padding:0 10px 28px;margin:12px auto}.panel{border-radius:18px}.topbar{align-items:flex-start;flex-direction:column;padding:22px 18px 16px}.legend{justify-content:flex-start}.matrix-wrap,.weekly-wrap{padding-left:18px;padding-right:18px}.matrix-foot{padding-left:18px;padding-right:18px;align-items:flex-start;flex-direction:column}.weekly-head{padding:18px;align-items:flex-start;flex-direction:column}.week-nav{align-self:stretch}.navbtn{flex:1}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <main class="panel">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Fall 2026</div>
+        <h1>Semester workload matrix</h1>
+        <div class="sub">Six courses · Sep 7 – Dec 27 · click any cell for that week</div>
+      </div>
+      <div class="legend" aria-label="Event symbol legend">
+        <span><b>♦</b>assignment</span><span><b>♠</b>quiz</span><span><b>♣</b>exam</span><span><b>♥</b>project / presentation</span><span><b>●</b>participation</span><span><b>▲</b>report / milestone</span>
+      </div>
+    </header>
+
+    <section id="semesterView" class="view active">
+      <div class="matrix-wrap"><div id="matrix" class="matrix"></div></div>
+      <div class="matrix-foot">
+        <div>MATH 4242 weekly homework / quiz dates are generated from the recurring syllabus rules; exact Canvas changes should override them.</div>
+        <div class="load-scale"><span>lighter</span><i class="swatch load1"></i><i class="swatch load2"></i><i class="swatch load3"></i><i class="swatch load4"></i><span>heavier</span></div>
+      </div>
+    </section>
+
+    <section id="weeklyView" class="view">
+      <div class="weekly-head">
+        <div class="weekly-left"><button class="back" id="backBtn">← Semester view</button><div><div class="week-title" id="weekTitle"></div><div id="focusChip" class="focus-chip" style="display:none"></div></div></div>
+        <div class="week-nav"><button class="navbtn" id="prevBtn">Previous Week ←</button><button class="navbtn" id="nextBtn">Next Week →</button></div>
+      </div>
+      <div class="weekly-wrap"><div id="weeklyGrid" class="weekly-grid"></div></div>
+      <div id="emptyNote" class="empty-note" style="display:none">No due items are listed for this week.</div>
+    </section>
+  </main>
+</div>
+<div id="tooltip" class="tooltip" role="tooltip"></div>
+
+<script>
+const courses=["MATH 4242","CSCI 4611","CSCI 4821","CSCI 5521","CSCI 5607","CSCI 5609"];
+const events=[];
+const add=(course,date,title,type,time="",detail="",inferred=false)=>events.push({course,date,title,type,time,detail,inferred});
+
+// MATH 4242: recurring rules from syllabus (weekly homework collection + Thursday quiz except first week).
+["2026-09-14","2026-09-21","2026-09-28","2026-10-05","2026-10-12","2026-10-19","2026-10-26","2026-11-02","2026-11-09","2026-11-16","2026-11-23","2026-11-30","2026-12-07","2026-12-14"].forEach((d,i)=>add("MATH 4242",d,`Homework ${i+1}`,"assignment","class time","Weekly hard-copy collection rule from syllabus; exact booklet numbering/date may be updated on Canvas.",true));
+["2026-09-17","2026-09-24","2026-10-01","2026-10-08","2026-10-15","2026-10-22","2026-10-29","2026-11-05","2026-11-12","2026-11-19","2026-12-03","2026-12-10"].forEach((d,i)=>add("MATH 4242",d,`Thursday quiz ${i+1}`,"quiz","9:05am","Quiz at the start of Thursday lab; recurring schedule from syllabus.",true));
+add("MATH 4242","2026-10-09","Midterm 1","exam","9:05am","Held during regular lecture time.");
+add("MATH 4242","2026-11-13","Midterm 2","exam","9:05am","Held during regular lecture time.");
+add("MATH 4242","2026-12-19","Final Exam","exam","10:30am","10:30am–12:30pm, Lind Hall 302.");
+
+// CSCI 4611: Canvas grade page dates.
+add("CSCI 4611","2026-09-17","Programming 1 Participation","participation","11:59pm");
+add("CSCI 4611","2026-09-22","Lecture 2 Participation","participation","11:59pm");
+add("CSCI 4611","2026-09-24","Programming 2 Participation","participation","11:59pm");
+add("CSCI 4611","2026-10-02","Assignment 1","assignment","11:59pm");
+add("CSCI 4611","2026-10-13","Exam 1 (Modules 1–2)","exam","4:00pm");
+add("CSCI 4611","2026-10-21","Assignment 2","assignment","11:59pm");
+add("CSCI 4611","2026-11-04","Assignment 3","assignment","11:59pm");
+add("CSCI 4611","2026-11-12","Exam 2 (Modules 3–4)","exam","4:00pm");
+add("CSCI 4611","2026-11-20","Assignment 4","assignment","11:59pm");
+add("CSCI 4611","2026-12-09","Assignment 5","assignment","11:59pm");
+add("CSCI 4611","2026-12-22","Assignment 6","assignment","11:59pm");
+add("CSCI 4611","2026-12-23","Exam 3 (Modules 5–6)","exam","12:30pm");
+add("CSCI 4611","2026-12-23","Replacement Exam (Optional)","exam","12:30pm","Optional cumulative section; replaces one exam score only if higher.");
+
+// CSCI 4821: Canvas grade page dates.
+[
+["2026-09-10","Participation — Introduction"],["2026-09-12","Participation — Demonstration"],["2026-09-17","Participation — LLMs and Agents"],
+["2026-09-19","Participation — Coding Agents"],["2026-09-24","Participation — Prompt / Context Engineering"],["2026-09-26","Participation — Harness Engineering"],
+["2026-10-01","Participation — Framing AI Development"],["2026-10-03","Participation — SDLC"],["2026-10-08","Participation — Architecture and Design"],
+["2026-10-10","Participation — Research-Plan-Implement"],["2026-10-15","Participation — Reviewing AI-Generated Code"],["2026-10-17","Participation — Security, Trust, Ethics"],
+["2026-10-22","Participation — Project Iteration 1"],["2026-10-24","Participation — Spec-Driven Development"],["2026-10-29","Participation — Guest Lecture"],
+["2026-10-31","Participation — Test-Driven Development"],["2026-11-05","Participation — Loop Engineering"],["2026-11-07","Participation — Cloud Agents"],
+["2026-11-12","Participation — Project Iteration 2"],["2026-11-14","Participation — Students' Choice"],["2026-11-19","Participation — Multi-Agent Development"],
+["2026-11-21","Participation — Beads and Software Factories"],["2026-11-26","Participation — Project Iteration 3"],["2026-12-03","Participation — Guest Lecture"],
+["2026-12-05","Participation — Tech Talks"],["2026-12-10","Participation — Tech Talks"],["2026-12-12","Participation — Tech Talks"],["2026-12-17","Participation — Software Engineering Career"]
+].forEach(([d,t])=>add("CSCI 4821",d,t,"participation","11:15am"));
+[
+["2026-09-18","Development Assignment — Set Up"],["2026-09-25","Development Assignment — Coding Agent"],["2026-10-02","Development Assignment — Enhanced Coding Assistant"],
+["2026-10-09","Development Assignment — Basic Workflows"],["2026-10-16","Development Assignment — Research-Plan-Implement"],["2026-10-23","Development Assignment — Code Review"],
+["2026-10-30","Development Assignment — Spec-Driven Development"],["2026-11-06","Development Assignment — Test-Driven Development"],["2026-11-20","Development Assignment — Ralph Loop"],["2026-12-01","Development Assignment — Software Factory"]
+].forEach(([d,t])=>add("CSCI 4821",d,t,"assignment","11:15am"));
+add("CSCI 4821","2026-11-10","Project Iteration 1","project","11:15am");
+add("CSCI 4821","2026-11-24","Project Iteration 2","project","11:15am");
+add("CSCI 4821","2026-12-03","Tech Talk","project","11:15am");
+add("CSCI 4821","2026-12-15","Project Iteration 3","project","11:15am");
+
+// CSCI 5521: course schedule.
+add("CSCI 5521","2026-09-15","HW0","assignment","","Due Tuesday Sep 15.");
+add("CSCI 5521","2026-10-01","Quiz 1","quiz");
+add("CSCI 5521","2026-10-07","HW1","assignment");
+add("CSCI 5521","2026-10-15","Quiz 2","quiz");
+add("CSCI 5521","2026-10-21","HW2","assignment");
+add("CSCI 5521","2026-10-31","Midterm — 48h window","exam","","Midterm starts Thu Oct 29 and is due within 48 hours; shown on Oct 31 as the latest deadline.");
+add("CSCI 5521","2026-11-12","Quiz 3","quiz");
+add("CSCI 5521","2026-11-18","HW3","assignment");
+add("CSCI 5521","2026-12-03","Quiz 4","quiz");
+add("CSCI 5521","2026-12-09","HW4","assignment");
+add("CSCI 5521","2026-12-17","Final exam period begins (TBD)","exam","","Syllabus lists final exam period Dec 17–23 with a 48h window; exact start/due date is TBD.",true);
+
+// CSCI 5607: Canvas course summary.
+add("CSCI 5607","2026-09-16","Brush — Handout","assignment","2:00pm");
+add("CSCI 5607","2026-09-28","Brush — GPLA","assignment","2:00pm"); add("CSCI 5607","2026-09-28","Brush — Program","assignment","2:00pm");
+add("CSCI 5607","2026-09-30","Algebra — Handout","assignment","2:00pm");
+add("CSCI 5607","2026-10-12","Algebra — GPLA","assignment","2:00pm"); add("CSCI 5607","2026-10-12","Algebra — Program","assignment","2:00pm");
+add("CSCI 5607","2026-10-14","Shapes — Handout","assignment","2:00pm");
+add("CSCI 5607","2026-10-26","Shapes — GPLA","assignment","2:00pm"); add("CSCI 5607","2026-10-26","Shapes — Program","assignment","2:00pm");
+add("CSCI 5607","2026-10-28","Camera — Handout","assignment","2:00pm");
+add("CSCI 5607","2026-11-09","Camera — GPLA","assignment","2:00pm"); add("CSCI 5607","2026-11-09","Camera — Program","assignment","2:00pm");
+add("CSCI 5607","2026-11-11","iModel — Handout","assignment","2:00pm");
+add("CSCI 5607","2026-11-23","iModel — GPLA","assignment","2:00pm"); add("CSCI 5607","2026-11-23","iModel — Program","assignment","2:00pm");
+add("CSCI 5607","2026-12-02","Ray — Handout","assignment","2:00pm");
+add("CSCI 5607","2026-12-14","Ray — GPLA","assignment","2:00pm"); add("CSCI 5607","2026-12-14","Ray — Program","assignment","2:00pm");
+
+// CSCI 5609: published schedule.
+add("CSCI 5609","2026-09-20","A0","assignment","11:59pm");
+add("CSCI 5609","2026-09-25","FP0","project","11:59pm");
+add("CSCI 5609","2026-10-04","A1","assignment","11:59pm");
+add("CSCI 5609","2026-10-12","FP1 — presentation milestone","project","11:59am");
+add("CSCI 5609","2026-10-25","A2","assignment","11:59pm");
+add("CSCI 5609","2026-11-08","A3","assignment","11:59pm");
+add("CSCI 5609","2026-11-16","FP2 — presentation milestone","project","11:59am");
+add("CSCI 5609","2026-12-02","FP3 Beta Release","milestone","11:59am");
+add("CSCI 5609","2026-12-06","FP3 Peer Review","milestone","11:59pm");
+add("CSCI 5609","2026-12-14","FP4 Slides / Final Presentations","project","11:59am");
+add("CSCI 5609","2026-12-20","Final report + group evaluations","milestone","11:59pm");
+
+const symbols={assignment:"♦",quiz:"♠",exam:"♣",project:"♥",participation:"●",milestone:"▲"};
+const weights={assignment:2.1,quiz:2.0,exam:4.2,project:3.5,participation:.8,milestone:3.0};
+const weekStarts=[]; for(let d=new Date("2026-09-07T12:00:00");d<=new Date("2026-12-21T12:00:00");d.setDate(d.getDate()+7))weekStarts.push(new Date(d));
+const currentDate=new Date("2026-09-19T12:00:00");
+const fmtShort=d=>d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+const fmtLong=d=>d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+const iso=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`};
+const mondayOf=d=>{const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.getDate()-day);x.setHours(12,0,0,0);return x};
+const currentWeekIso=iso(mondayOf(currentDate));
+let activeWeekIndex=0,focusedCourse=null;
+const tooltip=document.getElementById("tooltip");
+function eventsFor(course,start){const end=new Date(start);end.setDate(end.getDate()+6);const a=iso(start),b=iso(end);return events.filter(e=>e.course===course&&e.date>=a&&e.date<=b).sort((x,y)=>x.date.localeCompare(y.date));}
+function loadLevel(list){const s=list.reduce((n,e)=>n+(weights[e.type]||1),0);return s===0?0:s<=1.6?1:s<=3.4?2:s<=5.8?3:4}
+function uniqueMarks(list){const order=["exam","quiz","project","milestone","assignment","participation"];return order.filter(t=>list.some(e=>e.type===t)).map(t=>symbols[t]).join("")}
+function showTip(html,x,y){tooltip.innerHTML=html;tooltip.classList.add("show");const r=tooltip.getBoundingClientRect();let left=x+14,top=y+14;if(left+r.width>innerWidth-10)left=x-r.width-14;if(top+r.height>innerHeight-10)top=y-r.height-14;tooltip.style.left=left+"px";tooltip.style.top=top+"px"}
+function hideTip(){tooltip.classList.remove("show")}
+function eventTip(course,start,list){const end=new Date(start);end.setDate(end.getDate()+6);let html=`<div class="tip-title">${course} · ${fmtShort(start)}–${fmtShort(end)}</div>`;if(!list.length)return html+`<div class="tip-line">No due items.</div>`;html+=list.map(e=>`<div class="tip-line">${symbols[e.type]} <b>${fmtShort(new Date(e.date+"T12:00:00"))}</b> · ${e.title}${e.time?` · ${e.time}`:""}</div>`).join("");if(list.some(e=>e.inferred))html+=`<div class="tip-meta">* includes syllabus-rule inference / TBD timing</div>`;return html}
+function renderMatrix(){const matrix=document.getElementById("matrix");matrix.innerHTML="";
+  matrix.appendChild(Object.assign(document.createElement("div"),{className:"corner"}));
+  const spans=[];let last=null;weekStarts.forEach((w,i)=>{const m=w.toLocaleDateString("en-US",{month:"short"});if(!last||last.m!==m){last={m,start:i,count:1};spans.push(last)}else last.count++});
+  spans.forEach(s=>{const el=document.createElement("div");el.className="month-label";el.style.gridColumn=`${s.start+2} / span ${s.count}`;el.textContent=s.m;matrix.appendChild(el)});
+  matrix.appendChild(Object.assign(document.createElement("div"),{className:"corner"}));
+  weekStarts.forEach(w=>{const el=document.createElement("div");el.className="week-label"+(iso(w)===currentWeekIso?" current":"");el.innerHTML=`<span>${fmtShort(w)}<br>week</span>`;matrix.appendChild(el)});
+  courses.forEach(course=>{const label=document.createElement("div");label.className="course-label";label.textContent=course;matrix.appendChild(label);
+    weekStarts.forEach((w,wi)=>{const list=eventsFor(course,w);const cell=document.createElement("div");cell.className=`cell load${loadLevel(list)}`+(iso(w)===currentWeekIso?" current":"");cell.tabIndex=0;cell.setAttribute("aria-label",`${course}, week of ${fmtLong(w)}, ${list.length} due items`);cell.innerHTML=`<span class="marks">${uniqueMarks(list)}</span>`;
+      const tip=ev=>showTip(eventTip(course,w,list),ev.clientX,ev.clientY);cell.addEventListener("mousemove",tip);cell.addEventListener("mouseenter",tip);cell.addEventListener("mouseleave",hideTip);cell.addEventListener("focus",ev=>{const r=cell.getBoundingClientRect();showTip(eventTip(course,w,list),r.left+r.width/2,r.bottom)});cell.addEventListener("blur",hideTip);cell.addEventListener("click",()=>openWeek(wi,course));matrix.appendChild(cell)});
+  })
+}
+function openWeek(index,course){activeWeekIndex=Math.max(0,Math.min(weekStarts.length-1,index));focusedCourse=course;document.getElementById("semesterView").classList.remove("active");document.getElementById("weeklyView").classList.add("active");renderWeek();window.scrollTo({top:0,behavior:"smooth"})}
+function renderWeek(){const start=weekStarts[activeWeekIndex],end=new Date(start);end.setDate(end.getDate()+6);document.getElementById("weekTitle").textContent=`${fmtLong(start)} – ${fmtLong(end)}`;const chip=document.getElementById("focusChip");if(focusedCourse){chip.style.display="inline-block";chip.textContent=`Focused: ${focusedCourse}`}else chip.style.display="none";document.getElementById("prevBtn").disabled=activeWeekIndex===0;document.getElementById("nextBtn").disabled=activeWeekIndex===weekStarts.length-1;
+  const grid=document.getElementById("weeklyGrid");grid.innerHTML="";grid.appendChild(document.createElement("div"));
+  const days=[];for(let i=0;i<7;i++){const d=new Date(start);d.setDate(d.getDate()+i);days.push(d);const h=document.createElement("div");h.className="day-head";h.innerHTML=`<div class="dow">${d.toLocaleDateString("en-US",{weekday:"short"})}</div><div class="date">${fmtShort(d)}</div>`;grid.appendChild(h)}
+  let count=0;courses.forEach(course=>{const lab=document.createElement("div");lab.className="lane-label"+(course===focusedCourse?" focused":"");lab.textContent=course;grid.appendChild(lab);
+    days.forEach(d=>{const cell=document.createElement("div");cell.className="day-cell"+(course===focusedCourse?" focused":"");const list=events.filter(e=>e.course===course&&e.date===iso(d));count+=list.length;list.forEach(e=>{const item=document.createElement("div");item.className="item";item.innerHTML=`<div class="item-time">${symbols[e.type]} ${e.time||"time not listed"}</div><div class="item-title">${e.title}</div>`;const html=`<div class="tip-title">${course} · ${fmtLong(d)}</div><div class="tip-line">${symbols[e.type]} ${e.title}${e.time?` · ${e.time}`:""}</div>${e.detail?`<div class="tip-meta">${e.detail}</div>`:""}${e.inferred?`<div class="tip-meta">Timing is inferred / TBD from the syllabus wording.</div>`:""}`;item.addEventListener("mousemove",ev=>showTip(html,ev.clientX,ev.clientY));item.addEventListener("mouseenter",ev=>showTip(html,ev.clientX,ev.clientY));item.addEventListener("mouseleave",hideTip);cell.appendChild(item)});grid.appendChild(cell)})
+  });document.getElementById("emptyNote").style.display=count?"none":"block";
+}
+document.getElementById("backBtn").addEventListener("click",()=>{document.getElementById("weeklyView").classList.remove("active");document.getElementById("semesterView").classList.add("active");hideTip()});
+document.getElementById("prevBtn").addEventListener("click",()=>{if(activeWeekIndex>0){activeWeekIndex--;renderWeek()}});document.getElementById("nextBtn").addEventListener("click",()=>{if(activeWeekIndex<weekStarts.length-1){activeWeekIndex++;renderWeek()}});
+renderMatrix();
+</script>
+</body>
+</html>
