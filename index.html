@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aurora Schedule — try the semester matrix</title>
+<meta name="description" content="An LLM skill that turns messy syllabi into an interactive semester calendar in HTML. Try the real one-shot output in your browser." />
+<meta property="og:title" content="Aurora Schedule" />
+<meta property="og:description" content="Every course, every week, on one page. Try the live demo." />
+<meta property="og:image" content="https://kenny2077.github.io/Aurora-Schedule/docs/assets/social-preview.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Same tokens as the generated schedule page — the site and the artifact are one thing. */
+  :root{
+    --canvas:#f1ecff;
+    --panel:#ffffff;
+    --ink:#241b35;
+    --muted:#746a86;
+    --line:#e8e1f2;
+    --purple:#6d3fc0;
+    --purple-deep:#54308d;
+    --purple-1:#eee7fb;
+    --purple-2:#ddcff7;
+    --purple-4:#9871dc;
+    --shadow:0 22px 60px rgba(70,45,110,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1480px;margin:0 auto;padding:0 24px}
+  .stage{margin-top:4px}
+
+  /* ---- masthead ---------------------------------------------------- */
+  header{padding:54px 0 30px}
+  .masthead{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap}
+  h1{font-size:58px;font-weight:800;letter-spacing:-.037em;line-height:.98}
+  .tagline{margin-top:14px;font-size:20px;color:#4a4059;max-width:34ch;line-height:1.4}
+  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    border:1px solid #d9ccec;background:var(--panel);color:var(--purple-deep);
+    border-radius:12px;padding:12px 18px;font:inherit;font-weight:700;font-size:15px;
+    cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;
+    transition:background .14s ease,border-color .14s ease;
+  }
+  .btn:hover{background:#f6f1ff}
+  .btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+  .btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}
+  .btn.primary:hover{background:#5b33a6}
+
+  /* ---- the demo is the hero ---------------------------------------- */
+  /* The demo's own canvas is the same purple as this page, so the iframe reads as
+     part of the page rather than a screenshot bolted into a card. */
+  .stage-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:15px 22px;
+    background:var(--panel);
+    border:1px solid rgba(109,63,192,.08);
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(70,45,110,.07);
+  }
+  .hint{font-size:14px;color:var(--muted)}
+  .hint b{color:var(--purple-deep);font-weight:700}
+  .stage iframe{display:block;width:100%;height:1010px;border:0;background:transparent}
+  .openfull{font-size:14px;font-weight:700;color:var(--purple-deep);text-decoration:none}
+  .openfull:hover{text-decoration:underline}
+
+  /* ---- how ---------------------------------------------------------- */
+  .how{padding:58px 0 24px}
+  .how h2{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+  .how p.lede{color:#4a4059;font-size:17px;max-width:62ch;line-height:1.55}
+  ol.steps{margin:28px 0 0;padding:0;list-style:none;counter-reset:step;display:grid;gap:2px;max-width:900px}
+  ol.steps li{
+    counter-increment:step;
+    display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:baseline;
+    padding:18px 20px;background:var(--panel);border:1px solid var(--line);
+  }
+  ol.steps li:first-child{border-radius:16px 16px 0 0}
+  ol.steps li:last-child{border-radius:0 0 16px 16px}
+  ol.steps li::before{
+    content:counter(step);
+    font-weight:800;font-size:17px;color:var(--purple);
+    background:var(--purple-1);border-radius:9px;
+    width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+    transform:translateY(-4px);
+  }
+  ol.steps li p{font-size:16px;line-height:1.5}
+  ol.steps li code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;
+    background:var(--purple-1);padding:2px 6px;border-radius:5px;color:var(--purple-deep);
+  }
+  .note{
+    margin-top:26px;max-width:900px;padding:18px 20px;
+    background:var(--purple-1);border-radius:16px;
+    font-size:15px;line-height:1.55;color:#443a55;
+  }
+
+  /* ---- marks -------------------------------------------------------- */
+  .marks{padding:44px 0 0;max-width:900px}
+  .marks h2{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+  .markgrid{display:flex;flex-wrap:wrap;gap:10px}
+  .mark{
+    display:flex;align-items:center;gap:9px;
+    background:var(--panel);border:1px solid var(--line);border-radius:999px;
+    padding:9px 16px 9px 13px;font-size:15px;
+  }
+  .mark span{font-family:Georgia,"Times New Roman",serif;font-size:19px;color:#4f2b91;line-height:1}
+
+  footer{padding:56px 0 70px;color:var(--muted);font-size:14px;line-height:1.7}
+  footer a{color:var(--purple-deep);font-weight:600;text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
+  @media (max-width:860px){
+    header{padding:36px 0 22px}
+    h1{font-size:40px}
+    .tagline{font-size:18px}
+    .stage iframe{height:640px}
+    .how{padding:44px 0 16px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="masthead">
+      <div>
+        <h1>Aurora Schedule</h1>
+        <p class="tagline">Every course, every week, on one page — generated in one shot from your syllabi.</p>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="copyBtn" type="button">Copy the skill</button>
+        <a class="btn" href="https://github.com/kenny2077/Aurora-Schedule">View on GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="stage">
+      <div class="stage-bar">
+        <p class="hint"><b>Hover</b> any cell for that week's work. <b>Click</b> a cell to open the weekly view.</p>
+        <a class="openfull" href="examples/fall-2026-demo.html">Open the demo in its own tab</a>
+      </div>
+      <iframe src="examples/fall-2026-demo.html" title="Aurora Schedule live demo — Fall 2026 semester matrix" loading="eager" scrolling="no"></iframe>
+    </section>
+
+    <section class="how">
+      <h2>Make one for your semester</h2>
+      <p class="lede">The skill is a single Markdown file. It carries the layout rules, the symbol
+      vocabulary, and a self-inspection loop that makes the model score its own render and fix it
+      before handing it to you — which is why the first output is usually the one you keep.</p>
+
+      <ol class="steps">
+        <li><p>Press <b>Copy the skill</b> above, or open
+          <code>skills/semester-matrix/SKILL.md</code> and copy the whole file.</p></li>
+        <li><p>Paste it into ChatGPT, Claude, Claude Code, Codex — whichever you already use.</p></li>
+        <li><p>Attach your course material: syllabus PDFs, schedule pages, Canvas grade tables,
+          screenshots, plain text. Mixed formats are fine. Messy is fine.</p></li>
+        <li><p>Ask for the semester matrix, then save the HTML it gives you and open it in any browser.</p></li>
+      </ol>
+
+      <p class="note">Nothing is uploaded and nothing runs on a server. The output is one
+      self-contained HTML file — no build step, no dependencies, no account. It is yours, and it
+      works offline.</p>
+    </section>
+
+    <section class="marks">
+      <h2>Reading the grid</h2>
+      <div class="markgrid">
+        <div class="mark"><span>♦</span>assignment</div>
+        <div class="mark"><span>♠</span>quiz</div>
+        <div class="mark"><span>♣</span>exam</div>
+        <div class="mark"><span>♥</span>project or presentation</div>
+        <div class="mark"><span>●</span>participation</div>
+        <div class="mark"><span>▲</span>report or milestone</div>
+      </div>
+      <p class="note">Cells hold marks and no text, so the grid stays readable across a whole
+      semester. The deeper the purple, the more that week is carrying.</p>
+    </section>
+  </main>
+
+  <footer>
+    Part of the Aurora series ·
+    <a href="https://github.com/kenny2077/Aurora-Digest">Digest</a> ·
+    <a href="https://github.com/kenny2077/Aurora-Forge">Forge</a> ·
+    <a href="https://github.com/kenny2077/Aurora-Survival">Survival</a>
+    <br>MIT licensed. Built by <a href="https://github.com/kenny2077">kenny2077</a>.
+  </footer>
+
+</div>
+
+<script>
+  /* Keep the embedded demo at its natural height so the page never nests a
+     second scrollbar inside the first — the weekly view is taller than the
+     semester view, so this has to react to the switch. */
+  const frame = document.querySelector('.stage iframe');
+
+  function fitFrame(){
+    try{
+      const doc = frame.contentDocument;
+      if(!doc) return;
+      // The demo's body carries min-height:100vh, so measuring it at the current
+      // height would grow the frame on every pass. Collapse first, then measure.
+      frame.style.height = '0px';
+      
+      frame.style.height = (Math.max(520, doc.documentElement.scrollHeight) + 8) + 'px';
+    }catch(err){ /* cross-origin or not ready; the CSS height stands */ }
+  }
+
+  frame.addEventListener('load', () => {
+    try{
+      // The demo sets body{min-height:100vh}, which re-adds its own top margin to
+      // the scroll height every time the frame grows and keeps an inner scrollbar
+      // alive forever. Neutralize it in the embed only; the standalone file is
+      // untouched.
+      const doc = frame.contentDocument;
+      const patch = doc.createElement('style');
+      patch.textContent = 'body{min-height:0 !important}';
+      doc.head.appendChild(patch);
+    }catch(err){}
+    fitFrame();
+    // Fonts settle after load and shift the grid slightly.
+    setTimeout(fitFrame, 400);
+    try{
+      // Switching between the semester and weekly views changes the height.
+      frame.contentDocument.addEventListener('click', () => setTimeout(fitFrame, 80));
+    }catch(err){}
+  });
+  window.addEventListener('resize', () => setTimeout(fitFrame, 120));
+
+  const btn = document.getElementById('copyBtn');
+  const SKILL_URL = 'skills/semester-matrix/SKILL.md';
+  let label = btn.textContent;
+
+  function flash(text, revertAfter = 2200){
+    btn.textContent = text;
+    setTimeout(() => { btn.textContent = label; }, revertAfter);
+  }
+
+  btn.addEventListener('click', async () => {
+    try {
+      const res = await fetch(SKILL_URL, {cache:'no-store'});
+      if(!res.ok) throw new Error(res.status);
+      const text = await res.text();
+      await navigator.clipboard.writeText(text);
+      flash('Copied — now paste it into your LLM');
+    } catch (err) {
+      // Clipboard or fetch unavailable (file://, older browser, denied permission).
+      window.open('https://github.com/kenny2077/Aurora-Schedule/blob/main/skills/semester-matrix/SKILL.md', '_blank');
+      flash('Opened the skill on GitHub');
+    }
+  });
+</script>
+
+</body>
+</html>
