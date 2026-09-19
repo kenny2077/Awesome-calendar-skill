@@ -1,6 +1,6 @@
 <div align="center">
 
-# Uni Student Awesome Calendar Skill
+# Awesome Calendar Skill
 
 **A one-shot skill that turns messy syllabi into a beautiful, interactive semester schedule.**
 
