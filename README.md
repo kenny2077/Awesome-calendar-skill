@@ -20,7 +20,7 @@ Hover a cell. Click a cell. Nothing to install.
 
 <br>
 
-<img src="docs/assets/readme/semester-view.jpg" width="92%" alt="Semester workload matrix" />
+<img src="docs/assets/readme/semester-view.png" width="92%" alt="Semester workload matrix" />
 
 </div>
 
@@ -62,7 +62,7 @@ directory instead and let the agent build and preview the page for you.
 A single `.html` file. No build step, no server, no `node_modules`, no notebook kernel.
 
 <div align="center">
-<img src="docs/assets/readme/weekly-view.jpg" width="92%" alt="Weekly view" />
+<img src="docs/assets/readme/weekly-view.png" width="92%" alt="Weekly view" />
 </div>
 
 ### Symbols
