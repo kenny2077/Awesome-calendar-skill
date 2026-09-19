@@ -16,8 +16,6 @@ semester as a course × week workload matrix, with a weekly view one click away.
 
 ### [→ Live demo](https://kenny2077.github.io/Awesome-calendar-skill/)
 
-Hover a cell. Click a cell. Nothing to install.
-
 <br>
 
 <img src="docs/assets/readme/semester-view.png" width="92%" alt="Semester workload matrix" />
