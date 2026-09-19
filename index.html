@@ -37,29 +37,18 @@
   /* The demo's own canvas is the same purple as this page, so the iframe reads
      as the page itself rather than something embedded in it. */
   .stage iframe{display:block;width:100%;height:1010px;border:0;background:transparent}
-  .stage-bar{
-    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-    padding:14px 22px;margin-top:6px;
-    background:var(--panel);
-    border:1px solid rgba(109,63,192,.08);
-    border-radius:14px;
-    box-shadow:0 10px 30px rgba(70,45,110,.06);
-  }
-  .hint{font-size:14px;color:var(--muted)}
-  .hint b{color:var(--purple-deep);font-weight:700}
-  .openfull{font-size:14px;font-weight:700;color:var(--purple-deep);text-decoration:none;white-space:nowrap}
-  .openfull:hover{text-decoration:underline}
 
   /* ---- everything else sits under it, quietly ---------------------- */
-  .below{padding-top:56px;border-top:1px solid rgba(109,63,192,.1);margin-top:56px}
-  .ident{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap}
+  .below{padding-top:52px;border-top:1px solid rgba(109,63,192,.1);margin-top:44px}
+  .ident{display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
   h1{font-size:38px;font-weight:800;letter-spacing:-.032em;line-height:1.02}
   .tagline{margin-top:12px;font-size:18px;color:#4a4059;max-width:46ch;line-height:1.45}
-  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  /* Stacked: three side-by-side buttons stretched the row wider than it earned. */
+  .actions{display:flex;flex-direction:column;gap:8px;min-width:228px}
   .btn{
     border:1px solid #d9ccec;background:var(--panel);color:var(--purple-deep);
     border-radius:12px;padding:12px 18px;font:inherit;font-weight:700;font-size:15px;
-    cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;
+    cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;
     transition:background .14s ease,border-color .14s ease;
   }
   .btn:hover{background:#f6f1ff}
@@ -128,10 +117,6 @@
   <main>
     <section class="stage">
       <iframe src="examples/fall-2026-demo.html" title="Awesome Calendar Skill live demo — Fall 2026 semester matrix" loading="eager" scrolling="no"></iframe>
-      <div class="stage-bar">
-        <p class="hint"><b>Hover</b> any cell for that week's work. <b>Click</b> a cell to open the weekly view.</p>
-        <a class="openfull" href="examples/fall-2026-demo.html">Open the demo in its own tab</a>
-      </div>
     </section>
 
     <section class="below">
@@ -212,8 +197,8 @@
       // file is untouched.
       const doc = frame.contentDocument;
       const patch = doc.createElement('style');
-      // Also trim the demo's own bottom padding so the hint bar sits with the
-      // calendar instead of floating away from it.
+      // Also trim the demo's own bottom padding so the frame ends at the grid
+      // rather than on a band of empty canvas.
       patch.textContent = 'body{min-height:0 !important}.shell{padding-bottom:6px !important}';
       doc.head.appendChild(patch);
     }catch(err){}
