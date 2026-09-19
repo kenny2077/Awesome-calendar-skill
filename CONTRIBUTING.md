@@ -1,6 +1,6 @@
 # Contributing
 
-Aurora Schedule is a prompt artifact, not a codebase. The whole project is one
+This project is a prompt artifact, not a codebase. The whole project is one
 `SKILL.md` plus example output, so contributions are mostly about wording and
 rendering quality.
 

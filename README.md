@@ -1,6 +1,6 @@
 <div align="center">
 
-# Aurora Schedule
+# Uni Student Awesome Calendar Skill
 
 **A one-shot skill that turns messy syllabi into a beautiful, interactive semester schedule.**
 
@@ -24,7 +24,7 @@ Hover a cell. Click a cell. Nothing to install.
 
 </div>
 
-## Why Aurora Schedule
+## Why this exists
 
 Every semester starts the same way: six courses, six different places where the due
 dates actually live. One professor keeps everything in Canvas. One posts a schedule
@@ -33,7 +33,7 @@ Canvas shows you a list; it never shows you *the shape of your semester*.
 
 So you end up checking Canvas over and over, one course at a time, all term.
 
-Aurora Schedule replaces that with a single page you actually want to look at:
+This skill replaces all of that with a single page you actually want to open:
 
 | | |
 | --- | --- |
@@ -129,9 +129,9 @@ Re-run the skill with the updated material, or open the HTML and edit the event 
 near the bottom of the file. Canvas should always win over a syllabus-inferred date;
 the generated page marks inferred timings as TBD so you can tell them apart.
 
-## Aurora
+## More from the Aurora series
 
-Part of the Aurora series —
+Other projects of mine —
 [Aurora Digest](https://github.com/kenny2077/Aurora-Digest) ·
 [Aurora Forge](https://github.com/kenny2077/Aurora-Forge) ·
 [Aurora Survival](https://github.com/kenny2077/Aurora-Survival)
